@@ -1,11 +1,15 @@
 ;To find greatest number in an array
 section .data
 
-array: dq 0x9045678216894034, 0x1789046738215649, 0x8567934567289123, 0x3904567839873452
+	array: dq 0x9045678216894034, 0x1789046738215649, 0x8567934567289123, 0x3904567839873452
 
-cntr: db 3
+	cntr: db 3
 
-greatest_num: dq 0x0000000000000000
+	greatest_num: dq 0x0000000000000000
+
+section .bss
+
+	result: resb 50
 
 section .text
 global _start
@@ -26,12 +30,24 @@ _start:
 		jns swap
 	
 	loop2:
-		dec cntr
+		dec byte[cntr]
 		jnz loop
 		
 	mov rax, rdx
-	add greatest_num, rax
-	add greatest_num, 0x30
+	add qword[greatest_num], rax
+	add qword[greatest_num], 0x30
+	
+	dec rax
+	mov rsi, result
+	rol rax, 4
+	mov bl, al
+	and bl, 0x0f
+	cmp bl, 0x9
+	jbe l2
+	add bl, 0x07
+	add bl, 0x30
+	mov [rsi], bl
+	inc rsi
 	
 	mov rax, 1
 	mov rdi, 1
